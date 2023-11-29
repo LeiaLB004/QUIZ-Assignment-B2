@@ -38,61 +38,61 @@ customElements.define('my-hello',
      *
      * @type {HTMLDivElement}
      */
-     #bulletinBoard
+    #bulletinBoard
 
-     /**
-      * Creates an instance of the current type.
-      */
-     constructor () {
-       super()
+    /**
+     * Creates an instance of the current type.
+     */
+    constructor () {
+      super()
 
-       // Attach a shadow DOM tree to this element and
-       // append the template to the shadow root.
-       this.attachShadow({ mode: 'open' })
-         .appendChild(template.content.cloneNode(true))
+      // Attach a shadow DOM tree to this element and
+      // append the template to the shadow root.
+      this.attachShadow({ mode: 'open' })
+        .appendChild(template.content.cloneNode(true))
 
-       // Get the bulletin board element in the shadow root.
-       this.#bulletinBoard = this.shadowRoot.querySelector('.bulletin-board')
-     }
+      // Get the bulletin board element in the shadow root.
+      this.#bulletinBoard = this.shadowRoot.querySelector('.bulletin-board')
+    }
 
-     /**
-      * Attributes to monitor for changes.
-      *
-      * @returns {string[]} A string array of attributes to monitor.
-      */
-     static get observedAttributes () {
-       return ['message']
-     }
+    /**
+     * Attributes to monitor for changes.
+     *
+     * @returns {string[]} A string array of attributes to monitor.
+     */
+    static get observedAttributes () {
+      return ['message']
+    }
 
-     /**
-      * Called after the element is inserted into the DOM.
-      */
-     connectedCallback () {
-       if (!this.hasAttribute('message')) {
-         this.setAttribute('message', 'A simple hello from a web component.')
-       }
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      if (!this.hasAttribute('message')) {
+        this.setAttribute('message', 'A simple hello from a web component.')
+      }
 
-       this.#upgradeProperty('message')
-     }
+      this.#upgradeProperty('message')
+    }
 
-     /**
-      * Called when observed attribute(s) changes.
-      *
-      * @param {string} name - The attribute's name.
-      * @param {*} oldValue - The old value.
-      * @param {*} newValue - The new value.
-      */
-     attributeChangedCallback (name, oldValue, newValue) {
-       if (name === 'message') {
-         this.#bulletinBoard.textContent = newValue
-       }
-     }
+    /**
+     * Called when observed attribute(s) changes.
+     *
+     * @param {string} name - The attribute's name.
+     * @param {*} oldValue - The old value.
+     * @param {*} newValue - The new value.
+     */
+    attributeChangedCallback (name, oldValue, newValue) {
+      if (name === 'message') {
+        this.#bulletinBoard.textContent = newValue
+      }
+    }
 
-     //  /**
-     //   * Called after the element has been removed from the DOM.
-     //   */
-     //  disconnectedCallback () {
-     //  }
+    //  /**
+    //   * Called after the element has been removed from the DOM.
+    //   */
+    //  disconnectedCallback () {
+    //  }
 
     /**
      * Run the specified instance property
@@ -101,12 +101,12 @@ customElements.define('my-hello',
      * @param {string} prop - The property's name.
      */
     #upgradeProperty (prop) {
-       if (Object.hasOwnProperty.call(this, prop)) {
-         const value = this[prop]
-         delete this[prop]
-         this[prop] = value
-       }
-     }
+      if (Object.hasOwnProperty.call(this, prop)) {
+        const value = this[prop]
+        delete this[prop]
+        this[prop] = value
+      }
+    }
 
     /**
      * Gets the message.

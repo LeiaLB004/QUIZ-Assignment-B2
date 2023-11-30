@@ -4,11 +4,8 @@
  * @author // TODO: YOUR NAME <YOUR EMAIL>
  * @version 1.1.0
  */
+import './components/nickname-form/index.js'
 
-import './components/my-hello/index.js'
-
-const messageContainer = document.querySelector('#messageContainer')
-const message = document.createTextNode('Hi from an ECMAScript Module.')
-messageContainer.appendChild(message)
-
-// TODO: This is just some example code that you are free to use, modify or completely delete.
+const bodyElement = document.querySelector('body')
+const nicknameForm = document.createElement('nickname-form')
+bodyElement.appendChild(nicknameForm)

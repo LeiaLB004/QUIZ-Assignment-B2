@@ -24,10 +24,18 @@ template.innerHTML = `
   button:hover {
     background-color: #5163c9;
   }
+
+  #answerOptions {
+    margin-bottom: 20px;
+  }
+
+  #answerOptions input[type="radio"]{
+    margin-left: 10px;
+  }
 </style>
 
 <div id="container">
-  <h3 id="question">Hur många år är du?</h3>
+  <h3 id="question"></h3>
   <div id="answerOptions"></div>
   <button id="submitBtn">Submit answer</button>
 </div>
@@ -41,6 +49,11 @@ customElements.define('quiz-question',
      * The question.
      */
     #question
+
+    /**
+     * The type of question.
+     */
+    #questionType
 
     /**
      * The answer options.
@@ -62,6 +75,40 @@ customElements.define('quiz-question',
       this.#question = this.shadowRoot.getElementById('questionText')
       this.#answerOptions = this.shadowRoot.getElementById('answerOptions')
       this.#submitBtn = this.shadowRoot.getElementById('submitBtn')
+    }
+
+    /**
+     * Method for the questions with text input.
+     */
+    textInput () {
+      const input = document.createElement('input')
+      input.type = 'text'
+      input.placeholder = 'Type your answer here'
+      // Clear existing optiones
+      this.#answerOptions.innerHTML = ''
+      this.#answerOptions.appendChild(input)
+    }
+
+    /**
+     * Method for the multiple-choice questions.
+     *
+     * @param {string[]} options - The options the user can choose.
+     */
+    multipleChoiceInput (options) {
+      options.forEach((option, index) => {
+        const radio = document.createElement('input')
+        radio.type = 'radio'
+        radio.name = 'answerOptions'
+        radio.id = `option${index}`
+        radio.value = option
+
+        const label = document.createElement('label')
+        label.setAttribute('for', `option${index}`)
+        label.textContent = option
+
+        this.#answerOptions.appendChild(radio)
+        this.#answerOptions.appendChild(label)
+      })
     }
   }
 )

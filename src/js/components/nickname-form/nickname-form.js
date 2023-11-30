@@ -68,6 +68,11 @@ customElements.define('nickname-form',
     #form
 
     /**
+     * Hanedle submit.
+     */
+    #handleSubmit
+
+    /**
      * Creates an instance of the current type.
      */
     constructor () {
@@ -84,17 +89,32 @@ customElements.define('nickname-form',
      */
     connectedCallback () {
       // Add event listener to the form instead of the button
-      this.#form.addEventListener('submit', (event) => {
-        event.preventDefault()
-        console.log(this.#nicknameInput.value)
-      })
+      this.#form.addEventListener('submit',
+        /**
+         * Handles the submit event.
+         *
+         * @param {SubmitEvent} event The submit event.
+         */
+        this.#handleSubmit = (event) => {
+          event.preventDefault()
+          console.log('Form submitted with nickname: ' + this.chosenNickname())
+        })
     }
 
     /**
      * Called after the element has been removed from the DOM.
      */
     disconnectedCallback () {
-      this.#form.removeEventListener('submit')
+      this.#form.removeEventListener('submit', this.#handleSubmit)
+    }
+
+    /**
+     * Public method that returns the nickname chosen by the user.
+     *
+     * @returns {string} The user's chosen nickname.
+     */
+    chosenNickname () {
+      return this.#nicknameInput.value
     }
   }
 )

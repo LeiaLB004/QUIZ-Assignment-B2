@@ -58,12 +58,43 @@ customElements.define('nickname-form',
    */
   class extends HTMLElement {
     /**
+     * The users chosen nickname.
+     */
+    #nicknameInput
+
+    /**
+     * The nickname form.
+     */
+    #form
+
+    /**
      * Creates an instance of the current type.
      */
     constructor () {
       super()
 
       this.attachShadow({ mode: 'open' }).appendChild(template.content.cloneNode(true))
+
+      this.#nicknameInput = this.shadowRoot.getElementById('nickname')
+      this.#form = this.shadowRoot.getElementById('nicknameForm')
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      // Add event listener to the form instead of the button
+      this.#form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        console.log(this.#nicknameInput.value)
+      })
+    }
+
+    /**
+     * Called after the element has been removed from the DOM.
+     */
+    disconnectedCallback () {
+      this.#form.removeEventListener('submit')
     }
   }
 )

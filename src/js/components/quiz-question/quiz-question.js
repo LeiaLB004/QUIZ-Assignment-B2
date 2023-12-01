@@ -51,11 +51,6 @@ customElements.define('quiz-question',
     #question
 
     /**
-     * The type of question.
-     */
-    #questionType
-
-    /**
      * The answer options.
      */
     #answerOptions
@@ -75,6 +70,8 @@ customElements.define('quiz-question',
       this.#question = this.shadowRoot.getElementById('questionText')
       this.#answerOptions = this.shadowRoot.getElementById('answerOptions')
       this.#submitBtn = this.shadowRoot.getElementById('submitBtn')
+
+      this.#submitBtn.addEventListener('click', this.#handleSubmit.bind(this))
     }
 
     /**
@@ -109,6 +106,31 @@ customElements.define('quiz-question',
         this.#answerOptions.appendChild(radio)
         this.#answerOptions.appendChild(label)
       })
+    }
+
+    /**
+     * Method for handling the submit button.
+     */
+    #handleSubmit () {
+      const answer = this.#chosenAnswer()
+      console.log('Submit button clicked. Answer:', answer)
+      this.dispatchEvent(new CustomEvent('submit', { detail: { answer } }))
+    }
+
+    /**
+     * Method which returns the user's answer based on the question.
+     *
+     * @returns {string | null} The user's answer.
+     */
+    #chosenAnswer () {
+      const textInput = this.#answerOptions.querySelector('input[type="text"]')
+      const selectedRadio = this.#answerOptions.querySelector('input[type="radio"]:checked')
+      if (textInput) {
+        return textInput ? textInput.value : null
+      } else if (selectedRadio) {
+        return selectedRadio ? selectedRadio.value : null
+      }
+      return null
     }
   }
 )

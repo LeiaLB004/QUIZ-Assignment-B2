@@ -75,6 +75,21 @@ customElements.define('quiz-question',
     }
 
     /**
+     * A public method for setting question data recieved from the API.
+     *
+     * @param {object} questionData - An object with the data for the questions.
+     */
+    setQuestionData (questionData) {
+      this.#question.textContent = questionData.question
+
+      if (questionData.alternatives) {
+        this.multipleChoiceInput(questionData.alternatives)
+      } else {
+        this.textInput()
+      }
+    }
+
+    /**
      * Method for the questions with text input.
      */
     textInput () {
@@ -112,7 +127,7 @@ customElements.define('quiz-question',
      * Method for handling the submit button.
      */
     #handleSubmit () {
-      const answer = this.#chosenAnswer()
+      const answer = this.chosenAnswer()
       console.log('Submit button clicked. Answer:', answer)
       this.dispatchEvent(new CustomEvent('submit', { detail: { answer } }))
     }
@@ -122,13 +137,13 @@ customElements.define('quiz-question',
      *
      * @returns {string | null} The user's answer.
      */
-    #chosenAnswer () {
+    chosenAnswer () {
       const textInput = this.#answerOptions.querySelector('input[type="text"]')
       const selectedRadio = this.#answerOptions.querySelector('input[type="radio"]:checked')
       if (textInput) {
-        return textInput ? textInput.value : null
+        return textInput.value
       } else if (selectedRadio) {
-        return selectedRadio ? selectedRadio.value : null
+        return selectedRadio.value
       }
       return null
     }

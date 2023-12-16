@@ -43,6 +43,11 @@ customElements.define('quiz-application',
     #nicknameForm
 
     /**
+     * The current question data.
+     */
+    #questionData
+
+    /**
      * Creates an instance of the current type.
      */
     constructor () {
@@ -54,6 +59,14 @@ customElements.define('quiz-application',
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
       this.#quizQuestion = this.shadowRoot.querySelector('quiz-question')
 
+      // Initialize #questionData
+      this.#questionData = null
+
+      // Bind methods to the current instance
+      this.fetchQuestion = this.fetchQuestion.bind(this)
+      this.submitAnswer = this.submitAnswer.bind(this)
+
+      // Fetch the first question
       this.fetchQuestion()
     }
 
@@ -63,9 +76,30 @@ customElements.define('quiz-application',
     async fetchQuestion () {
       try {
         const response = await fetch('https://courselab.lnu.se/quiz/question/1')
-        const questionData = await response.json()
+        this.#questionData = await response.json()
 
-        this.#quizQuestion.setQuestionData(questionData)
+        this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer.bind())
+      } catch (error) {
+        console.error('Error fetching question:', error.message)
+      }
+    }
+
+    /**
+     * Submits the user's answer to the server.
+     *
+     * @param {string} a - The user's answer to be submitted.
+     */
+    async submitAnswer (a) {
+      try {
+        await fetch(this.#questionData.nextURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            answer: a
+          })
+        })
       } catch (error) {
         console.error('Error fetching question:', error.message)
       }

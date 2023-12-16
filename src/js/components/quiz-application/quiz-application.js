@@ -12,7 +12,9 @@ const template = document.createElement('template')
 template.innerHTML = `
 
 <style> 
-
+nickname-form {
+  display: none;
+}
 </style>
 
 <div id="quiz-container">
@@ -51,6 +53,22 @@ customElements.define('quiz-application',
 
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
       this.#quizQuestion = this.shadowRoot.querySelector('quiz-question')
+
+      this.fetchQuestion()
+    }
+
+    /**
+     * A method which fetches the first question.
+     */
+    async fetchQuestion () {
+      try {
+        const response = await fetch('https://courselab.lnu.se/quiz/question/1')
+        const questionData = await response.json()
+
+        this.#quizQuestion.setQuestionData(questionData)
+      } catch (error) {
+        console.error('Error fetching question:', error.message)
+      }
     }
   }
 

@@ -67,7 +67,7 @@ customElements.define('quiz-question',
 
       this.attachShadow({ mode: 'open' }).appendChild(template.content.cloneNode(true))
 
-      this.#question = this.shadowRoot.getElementById('questionText')
+      this.#question = this.shadowRoot.getElementById('question')
       this.#answerOptions = this.shadowRoot.getElementById('answerOptions')
       this.#submitBtn = this.shadowRoot.getElementById('submitBtn')
 

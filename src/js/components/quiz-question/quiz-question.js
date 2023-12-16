@@ -78,8 +78,9 @@ customElements.define('quiz-question',
      * A public method for setting question data recieved from the API.
      *
      * @param {object} questionData - An object with the data for the questions.
+     * @param {string} submitAnswer - The user's answer to be submitted.
      */
-    setQuestionData (questionData) {
+    setQuestionData (questionData, submitAnswer) {
       this.#question.textContent = questionData.question
 
       if (questionData.alternatives) {
@@ -87,6 +88,9 @@ customElements.define('quiz-question',
       } else {
         this.textInput()
       }
+
+      // Save the method submitAnswer
+      this.submitAnswer = submitAnswer
     }
 
     /**
@@ -129,6 +133,8 @@ customElements.define('quiz-question',
     #handleSubmit () {
       const answer = this.chosenAnswer()
       console.log('Submit button clicked. Answer:', answer)
+      // Call the method to submit the answer
+      this.submitAnswer(answer)
       this.dispatchEvent(new CustomEvent('submit', { detail: { answer } }))
     }
 

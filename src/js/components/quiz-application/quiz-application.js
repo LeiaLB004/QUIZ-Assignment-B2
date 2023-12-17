@@ -62,23 +62,21 @@ customElements.define('quiz-application',
       // Initialize #questionData
       this.#questionData = null
 
-      // Bind methods to the current instance
-      this.fetchQuestion = this.fetchQuestion.bind(this)
       this.submitAnswer = this.submitAnswer.bind(this)
 
       // Fetch the first question
-      this.fetchQuestion()
+      this.fetchFirstQuestion()
     }
 
     /**
      * A method which fetches the first question.
      */
-    async fetchQuestion () {
+    async fetchFirstQuestion () {
       try {
         const response = await fetch('https://courselab.lnu.se/quiz/question/1')
         this.#questionData = await response.json()
 
-        this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer.bind())
+        this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
       } catch (error) {
         console.error('Error fetching question:', error.message)
       }
@@ -91,7 +89,7 @@ customElements.define('quiz-application',
      */
     async submitAnswer (a) {
       try {
-        await fetch(this.#questionData.nextURL, {
+        const response = await fetch(this.#questionData.nextURL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -100,6 +98,17 @@ customElements.define('quiz-application',
             answer: a
           })
         })
+
+        // Get the data of the response
+        const responseData = await response.json()
+        // Get the next response
+        const nextResponse = await fetch(responseData.nextURL)
+        // Get the data of the next question
+        const nextQuestionData = await nextResponse.json()
+
+        this.#questionData = nextQuestionData
+
+        this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
       } catch (error) {
         console.error('Error fetching question:', error.message)
       }

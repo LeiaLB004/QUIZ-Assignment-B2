@@ -83,6 +83,8 @@ customElements.define('quiz-question',
     setQuestionData (questionData, submitAnswer) {
       this.#question.textContent = questionData.question
 
+      this.#answerOptions.innerHTML = ''
+
       if (questionData.alternatives) {
         this.multipleChoiceInput(questionData.alternatives)
       } else {
@@ -106,25 +108,25 @@ customElements.define('quiz-question',
     }
 
     /**
-     * Method for the multiple-choice questions.
+     * Renders multiple-choice input options based on the provided alternatives.
      *
-     * @param {string[]} options - The options the user can choose.
+     * @param {object} alternatives - An object containing key-value pairs representing the alternatives for a multiple-choice question.
      */
-    multipleChoiceInput (options) {
-      options.forEach((option, index) => {
+    multipleChoiceInput (alternatives) {
+      for (const [key, value] of Object.entries(alternatives)) {
         const radio = document.createElement('input')
         radio.type = 'radio'
         radio.name = 'answerOptions'
-        radio.id = `option${index}`
-        radio.value = option
+        radio.id = key
+        radio.value = value
 
         const label = document.createElement('label')
-        label.setAttribute('for', `option${index}`)
-        label.textContent = option
+        label.setAttribute('for', key)
+        label.textContent = `${value}`
 
         this.#answerOptions.appendChild(radio)
         this.#answerOptions.appendChild(label)
-      })
+      }
     }
 
     /**

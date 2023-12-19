@@ -97,7 +97,9 @@ customElements.define('nickname-form',
          */
         this.#handleSubmit = (event) => {
           event.preventDefault()
-          console.log('Form submitted with nickname: ' + this.chosenNickname())
+          const nickname = this.chosenNickname()
+          console.log('Form submitted with nickname: ' + nickname)
+          this.dispatchEvent(new CustomEvent('startQuiz', { detail: { nickname } }))
         })
     }
 

@@ -13,7 +13,7 @@ template.innerHTML = `
 
 <style> 
 nickname-form {
-  display: none;
+  display: block;
 }
 </style>
 
@@ -65,21 +65,19 @@ customElements.define('quiz-application',
       this.submitAnswer = this.submitAnswer.bind(this)
 
       // Fetch the first question
-      this.fetchFirstQuestion()
-    }
+      this.#nicknameForm.addEventListener('startQuiz', async (event) => {
+        try {
+          const response = await fetch('https://courselab.lnu.se/quiz/question/1')
+          this.#questionData = await response.json()
 
-    /**
-     * A method which fetches the first question.
-     */
-    async fetchFirstQuestion () {
-      try {
-        const response = await fetch('https://courselab.lnu.se/quiz/question/1')
-        this.#questionData = await response.json()
+          this.#nicknameForm.style.display = 'none'
+          this.#quizQuestion.style.display = 'block'
 
-        this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
-      } catch (error) {
-        console.error('Error fetching question:', error.message)
-      }
+          this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
+        } catch (error) {
+          console.error('Error fetching question:', error.message)
+        }
+      })
     }
 
     /**

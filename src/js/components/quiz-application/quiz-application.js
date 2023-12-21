@@ -15,6 +15,9 @@ template.innerHTML = `
 nickname-form {
   display: block;
 }
+quiz-question {
+  display: none;
+}
 </style>
 
 <div id="quiz-container">
@@ -58,9 +61,6 @@ customElements.define('quiz-application',
 
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
       this.#quizQuestion = this.shadowRoot.querySelector('quiz-question')
-
-      // Initialize #questionData
-      this.#questionData = null
 
       this.submitAnswer = this.submitAnswer.bind(this)
 

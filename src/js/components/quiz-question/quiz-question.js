@@ -151,7 +151,7 @@ customElements.define('quiz-question',
       if (textInput) {
         return textInput.value
       } else if (selectedRadio) {
-        return selectedRadio.value
+        return selectedRadio.id
       }
       return null
     }

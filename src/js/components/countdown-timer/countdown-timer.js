@@ -7,7 +7,7 @@
 
 const template = document.createElement('template')
 template.innerHTML = `
-
+<div id='timer'></div>
 `
 customElements.define('countdown-timer',
   /**
@@ -30,7 +30,32 @@ customElements.define('countdown-timer',
     constructor () {
       super()
 
-      this.attachShadow({ mode: 'open' }).appendChild(template.content.cloneNode(true))
+      this.attachShadow({ mode: 'open' })
+      this.shadowRoot.appendChild(template.content.cloneNode(true))
+
+      this.#timer = this.shadowRoot.querySelector('.timer')
+    }
+
+    /**
+     * Attributes to monitor for changes.
+     *
+     * @returns {string[]} A string array of attributes to monitor.
+     */
+    static get observedAttributes () {
+      return ['limit']
+    }
+
+    /**
+     * Called when observed attribute(s) changes.
+     *
+     * @param {string} name of the attribute.
+     * @param {any} oldValue the old attribute value.
+     * @param {any} newValue the new attribute value.
+     */
+    attributeChangedCallback (name, oldValue, newValue) {
+      if (name === 'limit') {
+        this.#limit = newValue
+      }
     }
   }
 )

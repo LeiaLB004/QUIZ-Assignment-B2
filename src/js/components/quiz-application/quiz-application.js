@@ -7,6 +7,7 @@
 
 import '../nickname-form/index.js'
 import '../quiz-question/index.js'
+import '../countdown-timer/index.js'
 
 const template = document.createElement('template')
 template.innerHTML = `
@@ -18,14 +19,20 @@ nickname-form {
 quiz-question {
   display: none;
 }
+
+countdown-timer {
+  display: none;
+}
 </style>
 
 <div id="quiz-container">
+  <h1>The Quiz</h1>
   <!-- Nickname form -->
   <nickname-form></nickname-form>
 
   <h2></h2>
 
+  <countdown-timer></countdown-timer>
   <!-- Quiz question -->
   <quiz-question></quiz-question>
 
@@ -59,6 +66,11 @@ customElements.define('quiz-application',
     #headerElement
 
     /**
+     * A countdown timer.
+     */
+    #countdownTimer
+
+    /**
      * Creates an instance of the current type.
      */
     constructor () {
@@ -70,12 +82,15 @@ customElements.define('quiz-application',
       this.#nicknameForm = this.shadowRoot.querySelector('nickname-form')
       this.#quizQuestion = this.shadowRoot.querySelector('quiz-question')
       this.#headerElement = this.shadowRoot.querySelector('h2')
+      this.#countdownTimer = this.shadowRoot.querySelector('countdown-timer')
 
       this.submitAnswer = this.submitAnswer.bind(this)
 
       this.#nicknameForm.addEventListener('startQuiz', async (event) => {
         try {
+          console.log('Starting quiz')
           this.fetchQuestion()
+          console.log('Countdown timer started')
         } catch (error) {
           console.error('Error:', error.message)
         }
@@ -95,6 +110,12 @@ customElements.define('quiz-application',
         this.#quizQuestion.style.display = 'block'
         this.#headerElement.innerHTML = 'Welcome to the quiz ' + this.#nicknameForm.chosenNickname() + '!'
 
+        // Set the initial limit for the countdown timer based on the question data
+        const limit = this.#questionData.limit || 20
+        this.#countdownTimer.setAttribute('limit', limit.toString())
+
+        // Show the countdown timer
+        this.#countdownTimer.style.display = 'block'
         this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
       } catch (error) {
         console.error('Error fetching question:', error.message)
@@ -130,6 +151,9 @@ customElements.define('quiz-application',
           this.#questionData = nextQuestionData
 
           this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
+          // Reset the countdown timer for the next question
+          const limit = this.#questionData.limit || 20
+          this.#countdownTimer.setAttribute('limit', limit.toString())
         } else {
           console.log('You completed the quiz!')
           this.endQuiz()
@@ -146,6 +170,7 @@ customElements.define('quiz-application',
       this.#headerElement.innerHTML = 'Great! You finished the quiz!'
       this.#nicknameForm.style.display = 'block'
       this.#quizQuestion.style.display = 'none'
+      this.#countdownTimer.style.display = 'none'
     }
   }
 

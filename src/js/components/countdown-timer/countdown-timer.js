@@ -20,11 +20,6 @@ customElements.define('countdown-timer',
     #timer
 
     /**
-     * The timer's limit with 20 as default.
-     */
-    #limit = 20
-
-    /**
      * Creates an instance of the current type.
      */
     constructor () {
@@ -33,7 +28,7 @@ customElements.define('countdown-timer',
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
-      this.#timer = this.shadowRoot.querySelector('.timer')
+      this.#timer = this.shadowRoot.querySelector('#timer')
     }
 
     /**
@@ -54,8 +49,41 @@ customElements.define('countdown-timer',
      */
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'limit') {
-        this.#limit = newValue
+        this.resetTimer(newValue || 20)
       }
+    }
+
+    /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      this.resetTimer(this.getAttribute('limit') || 20)
+    }
+
+    /**
+     * Called after the element has been removed from the DOM.
+     */
+    disconnectedCallback () {
+      clearInterval(this.intervalId)
+    }
+
+    /**
+     * Resets the countdown timer with a new limit and starts the countdown.
+     *
+     * @param {string} limit - The new limit for the countdown timer.
+     */
+    resetTimer (limit) {
+      this.#timer.textContent = limit
+      clearInterval(this.intervalId)
+      this.intervalId = setInterval(() => {
+        this.#timer.textContent = limit
+        if (limit === 0) {
+          clearInterval(this.intervalId)
+          this.dispatchEvent(new Event('timeOut'))
+        } else {
+          limit--
+        }
+      }, 1000)
     }
   }
 )

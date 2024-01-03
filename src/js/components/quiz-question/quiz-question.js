@@ -8,6 +8,21 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
+  input {
+    display: box;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    font-family:inherit;
+    font-size: inherit;
+    border: 2px solid grey;
+  }
+
+  input:hover {
+    background-color: #fafafa;
+    border: 2px solid lightgrey;
+  }
+
   button {
     display: block;
     appearance:none;
@@ -75,6 +90,18 @@ customElements.define('quiz-question',
     }
 
     /**
+     * Called after the element is inserted into the DOM.
+     */
+    connectedCallback () {
+      this.#answerOptions.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault()
+          this.#handleSubmit()
+        }
+      })
+    }
+
+    /**
      * A public method for setting question data recieved from the API.
      *
      * @param {object} questionData - An object with the data for the questions.
@@ -101,7 +128,8 @@ customElements.define('quiz-question',
     textInput () {
       const input = document.createElement('input')
       input.type = 'text'
-      input.placeholder = 'Type your answer here'
+      input.placeholder = 'Type here and press enter'
+
       // Clear existing optiones
       this.#answerOptions.innerHTML = ''
       this.#answerOptions.appendChild(input)
@@ -134,10 +162,8 @@ customElements.define('quiz-question',
      */
     #handleSubmit () {
       const answer = this.chosenAnswer()
-      console.log('Submit button clicked. Answer:', answer)
       // Call the method to submit the answer
       this.submitAnswer(answer)
-      this.dispatchEvent(new CustomEvent('submit', { detail: { answer } }))
     }
 
     /**

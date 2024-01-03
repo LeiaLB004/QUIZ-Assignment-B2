@@ -68,7 +68,7 @@ customElements.define('nickname-form',
     #form
 
     /**
-     * Hanedle submit.
+     * Handle submit.
      */
     #handleSubmit
 
@@ -98,7 +98,6 @@ customElements.define('nickname-form',
         this.#handleSubmit = (event) => {
           event.preventDefault()
           const nickname = this.chosenNickname()
-          console.log('Form submitted with nickname: ' + nickname)
           this.dispatchEvent(new CustomEvent('startQuiz', { detail: { nickname } }))
         })
     }
@@ -117,6 +116,13 @@ customElements.define('nickname-form',
      */
     chosenNickname () {
       return this.#nicknameInput.value
+    }
+
+    /**
+     * A method for clearing the nickname form's input.
+     */
+    clearInput () {
+      this.#nicknameInput.value = ''
     }
   }
 )

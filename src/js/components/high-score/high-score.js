@@ -55,11 +55,28 @@ customElements.define('high-score',
     }
 
     /**
+     * A method for setting the highscores.
+     *
+     * @param {object} highScores - An object with the player's username and total time.
+     */
+    setHighScores (highScores) {
+      this.#highscoreBody.innerHTML = ''
+
+      highScores.sort((a, b) => a.score - b.score)
+
+      const displayedHighscores = highScores.slice(0, 5)
+
+      displayedHighscores.forEach((score, index) => {
+        this.addRow(index + 1, score.username, score.score)
+      })
+    }
+
+    /**
      * Add a row to the table.
      *
-     * @param {*} rank - Rank of the high score.
-     * @param {*} username - Username the score holder.
-     * @param {*} time - The time of the high score in seconds.
+     * @param {number} rank - Rank of the high score.
+     * @param {string} username - Username the score holder.
+     * @param {number} time - The time of the high score in seconds.
      */
     addRow (rank, username, time) {
       const row = document.createElement('tr')

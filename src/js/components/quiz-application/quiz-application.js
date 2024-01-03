@@ -14,6 +14,24 @@ const template = document.createElement('template')
 template.innerHTML = `
 
 <style> 
+
+button {
+    display: block;
+    appearance:none;
+    -webkit-appearance:none;
+    padding:10px;
+    border:none;
+    background-color:#3F51B5;
+    color:#fff;
+    font-weight:600;
+    border-radius:5px;
+
+  }
+
+  button:hover {
+    background-color: #5163c9;
+  }
+
 nickname-form {
   display: block;
 }
@@ -27,6 +45,7 @@ countdown-timer {
 
 high-score {
   display: none;
+  margin-bottom: 20px;
 }
 
 #restartButton {
@@ -34,7 +53,7 @@ high-score {
 }
 </style>
 
-<div id="quiz-container">
+<div id="quizContainer">
   <h1>The Quiz</h1>
   <!-- Nickname form -->
   <nickname-form></nickname-form>
@@ -86,6 +105,11 @@ customElements.define('quiz-application',
      * A restart button.
      */
     #restartButton
+
+    /**
+     * Is true if the quiz is completed.
+     */
+    #completeQuiz = false
 
     /**
      * Creates an instance of the current type.
@@ -155,22 +179,31 @@ customElements.define('quiz-application',
           })
         })
 
-        // Get the data of the response
-        const responseData = await response.json()
-
-        if (responseData.nextURL) {
-          // Get the next response
-          const nextResponse = await fetch(responseData.nextURL)
-          // Get the data of the next question
-          const nextQuestionData = await nextResponse.json()
-
-          this.#questionData = nextQuestionData
-
-          this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
-          this.timer()
-        } else {
+        // Do this if the player answer wrong.
+        if (!response.ok) {
+          console.log('Jaha, det gick ju inte värst bra..')
+          this.#completeQuiz = false
           this.endQuiz()
-          this.#countdownTimer.disconnectedCallback()
+          // If the player answer right, do this.
+        } else {
+          // Get the data of the response
+          const responseData = await response.json()
+
+          if (responseData.nextURL) {
+          // Get the next response
+            const nextResponse = await fetch(responseData.nextURL)
+            // Get the data of the next question
+            const nextQuestionData = await nextResponse.json()
+
+            this.#questionData = nextQuestionData
+
+            this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
+            this.timer()
+            // Do this if the player finished the quiz.
+          } else {
+            this.#completeQuiz = true
+            this.endQuiz()
+          }
         }
       } catch (error) {
         console.error('Error fetching question:', error.message)
@@ -190,10 +223,15 @@ customElements.define('quiz-application',
      * A method for ending the quiz.
      */
     endQuiz () {
+      if (this.#completeQuiz) {
+        console.log('Yes, You did it!')
+      }
+      this.#countdownTimer.disconnectedCallback()
       this.#quizQuestion.style.display = 'none'
       this.#countdownTimer.style.display = 'none'
       this.#highScore.style.display = 'block'
       this.#restartButton.style.display = 'block'
+
       this.restartQuiz()
     }
 
@@ -209,5 +247,4 @@ customElements.define('quiz-application',
       })
     }
   }
-
 )

@@ -28,6 +28,10 @@ countdown-timer {
 high-score {
   display: none;
 }
+
+#restartButton {
+  display: none;
+}
 </style>
 
 <div id="quiz-container">
@@ -42,6 +46,7 @@ high-score {
   <quiz-question></quiz-question>
   
   <high-score></high-score>
+  <button id="restartButton">Restart Quiz</button>
 
 </div>
 `
@@ -78,6 +83,11 @@ customElements.define('quiz-application',
     #highScore
 
     /**
+     * A restart button.
+     */
+    #restartButton
+
+    /**
      * Creates an instance of the current type.
      */
     constructor () {
@@ -90,6 +100,7 @@ customElements.define('quiz-application',
       this.#quizQuestion = this.shadowRoot.querySelector('quiz-question')
       this.#countdownTimer = this.shadowRoot.querySelector('countdown-timer')
       this.#highScore = this.shadowRoot.querySelector('high-score')
+      this.#restartButton = this.shadowRoot.querySelector('#restartButton')
 
       this.submitAnswer = this.submitAnswer.bind(this)
 
@@ -115,15 +126,13 @@ customElements.define('quiz-application',
         const response = await fetch('https://courselab.lnu.se/quiz/question/1')
         // Fetch the first question
         this.#questionData = await response.json()
-
+        this.#countdownTimer.style.display = 'block'
         this.#nicknameForm.style.display = 'none'
         this.#quizQuestion.style.display = 'block'
 
-        this.timer()
-
         // Show the countdown timer
-        this.#countdownTimer.style.display = 'block'
         this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
+        this.timer()
       } catch (error) {
         console.error('Error fetching question:', error.message)
       }
@@ -161,6 +170,7 @@ customElements.define('quiz-application',
           this.timer()
         } else {
           this.endQuiz()
+          this.#countdownTimer.disconnectedCallback()
         }
       } catch (error) {
         console.error('Error fetching question:', error.message)
@@ -183,6 +193,20 @@ customElements.define('quiz-application',
       this.#quizQuestion.style.display = 'none'
       this.#countdownTimer.style.display = 'none'
       this.#highScore.style.display = 'block'
+      this.#restartButton.style.display = 'block'
+      this.restartQuiz()
+    }
+
+    /**
+     * A method for restarting the quiz.
+     */
+    restartQuiz () {
+      this.#restartButton.addEventListener('click', () => {
+        this.#nicknameForm.clearInput()
+        this.#nicknameForm.style.display = 'block'
+        this.#highScore.style.display = 'none'
+        this.#restartButton.style.display = 'none'
+      })
     }
   }
 

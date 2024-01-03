@@ -213,7 +213,6 @@ customElements.define('quiz-application',
             // Do this if the player finished the quiz.
           } else {
             this.stopTimer = new Date().getTime()
-            this.userTime()
             this.#completeQuiz = true
             this.endQuiz()
           }
@@ -233,11 +232,38 @@ customElements.define('quiz-application',
     }
 
     /**
-     * The player's total time.
+     * Calculate the player's total time.
+     *
+     * @returns {number} The player's total time.
      */
     userTime () {
       const timeDuration = Math.floor((this.stopTimer - this.startTimer) / 1000)
-      console.log(`User time: ${timeDuration} seconds`)
+      return timeDuration
+    }
+
+    /**
+     * Store the player's highscore.
+     *
+     * @param {number} totalTime - The player's total time.
+     */
+    storeHighScore (totalTime) {
+      const newHighScore = {
+        username: this.#nicknameForm.chosenNickname(),
+        score: totalTime
+      }
+      const storedHighScores = window.localStorage.getItem('quiz-highscore')
+
+      const highscores = storedHighScores ? JSON.parse(storedHighScores) : []
+
+      highscores.push(newHighScore)
+
+      highscores.sort((a, b) => a.score - b.score)
+
+      const topHighScores = highscores.slice(0, 5)
+
+      window.localStorage.setItem('quiz-highscore', JSON.stringify(highscores))
+
+      this.#highScore.setHighScores(topHighScores)
     }
 
     /**
@@ -247,13 +273,14 @@ customElements.define('quiz-application',
       if (this.#completeQuiz) {
         console.log('Yes, You did it!')
         this.#headerElement.innerText = 'You did it!'
+        this.storeHighScore(this.userTime())
       } else {
         this.#headerElement.innerText = 'Well, that did not go well... Better luck next time!'
       }
       this.#countdownTimer.disconnectedCallback()
       this.#quizQuestion.style.display = 'none'
-      this.#countdownTimer.style.display = 'none'
       this.#highScore.style.display = 'block'
+      this.#countdownTimer.style.display = 'none'
       this.#restartButton.style.display = 'block'
 
       this.restartQuiz()

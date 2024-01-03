@@ -16,38 +16,18 @@ template.innerHTML = `
     border-radius: 10px;
     font-family:inherit;
     font-size: inherit;
-    border: 0;
-    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
-  }
-
-  button {
-    display: block;
-    appearance:none;
-    -webkit-appearance:none;
-    padding:10px;
-    border:none;
-    background-color:#3F51B5;
-    color:#fff;
-    font-weight:600;
-    border-radius:5px;
-
+    border: 2px solid grey;
   }
 
   input:hover {
     background-color: #fafafa;
-    border:0;
-    box-shadow:0 0 2px rgba(0,0,0,0.3);
-  }
-
-  button:hover {
-    background-color: #5163c9;
+    border: 2px solid lightgrey;
   }
 
 </style>
 <h2>Type in your nickname</h2>
 <form id=nicknameForm>
-    <input type="text" id="nickname" placeholder="Type here" required>
-    <button type="submit">Submit</button>
+    <input type="text" id="nickname" placeholder="Type here and press enter" required>
 </form>
 
 `
@@ -68,9 +48,9 @@ customElements.define('nickname-form',
     #form
 
     /**
-     * Handle submit.
+     * Handle enter key.
      */
-    #handleSubmit
+    #handleEnter
 
     /**
      * Creates an instance of the current type.
@@ -89,16 +69,18 @@ customElements.define('nickname-form',
      */
     connectedCallback () {
       // Add event listener to the form instead of the button
-      this.#form.addEventListener('submit',
+      this.#form.addEventListener('keydown',
         /**
          * Handles the submit event.
          *
          * @param {SubmitEvent} event The submit event.
          */
-        this.#handleSubmit = (event) => {
-          event.preventDefault()
-          const nickname = this.chosenNickname()
-          this.dispatchEvent(new CustomEvent('startQuiz', { detail: { nickname } }))
+        this.#handleEnter = (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault()
+            const nickname = this.chosenNickname()
+            this.dispatchEvent(new CustomEvent('startQuiz', { detail: { nickname } }))
+          }
         })
     }
 
@@ -106,7 +88,7 @@ customElements.define('nickname-form',
      * Called after the element has been removed from the DOM.
      */
     disconnectedCallback () {
-      this.#form.removeEventListener('submit', this.#handleSubmit)
+      this.#form.removeEventListener('keydown', this.#handleEnter.bind(this))
     }
 
     /**

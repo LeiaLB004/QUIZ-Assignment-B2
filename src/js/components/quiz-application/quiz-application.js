@@ -102,6 +102,11 @@ customElements.define('quiz-application',
     #highScore
 
     /**
+     * A header element.
+     */
+    #headerElement
+
+    /**
      * A restart button.
      */
     #restartButton
@@ -117,6 +122,9 @@ customElements.define('quiz-application',
     constructor () {
       super()
 
+      this.startTimer = 0
+      this.stopTimer = 0
+
       this.attachShadow({ mode: 'open' })
       this.shadowRoot.appendChild(template.content.cloneNode(true))
 
@@ -124,12 +132,14 @@ customElements.define('quiz-application',
       this.#quizQuestion = this.shadowRoot.querySelector('quiz-question')
       this.#countdownTimer = this.shadowRoot.querySelector('countdown-timer')
       this.#highScore = this.shadowRoot.querySelector('high-score')
+      this.#headerElement = this.shadowRoot.querySelector('h2')
       this.#restartButton = this.shadowRoot.querySelector('#restartButton')
 
       this.submitAnswer = this.submitAnswer.bind(this)
 
       this.#nicknameForm.addEventListener('startQuiz', async (event) => {
         try {
+          this.startTimer = new Date().getTime()
           this.fetchQuestion()
         } catch (error) {
           console.error('Error:', error.message)
@@ -184,6 +194,7 @@ customElements.define('quiz-application',
           console.log('Jaha, det gick ju inte värst bra..')
           this.#completeQuiz = false
           this.endQuiz()
+
           // If the player answer right, do this.
         } else {
           // Get the data of the response
@@ -201,6 +212,8 @@ customElements.define('quiz-application',
             this.timer()
             // Do this if the player finished the quiz.
           } else {
+            this.stopTimer = new Date().getTime()
+            this.userTime()
             this.#completeQuiz = true
             this.endQuiz()
           }
@@ -220,11 +233,22 @@ customElements.define('quiz-application',
     }
 
     /**
+     * The player's total time.
+     */
+    userTime () {
+      const timeDuration = Math.floor((this.stopTimer - this.startTimer) / 1000)
+      console.log(`User time: ${timeDuration} seconds`)
+    }
+
+    /**
      * A method for ending the quiz.
      */
     endQuiz () {
       if (this.#completeQuiz) {
         console.log('Yes, You did it!')
+        this.#headerElement.innerText = 'You did it!'
+      } else {
+        this.#headerElement.innerText = 'Well, that did not go well... Better luck next time!'
       }
       this.#countdownTimer.disconnectedCallback()
       this.#quizQuestion.style.display = 'none'

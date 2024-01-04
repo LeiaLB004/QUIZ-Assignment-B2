@@ -69,13 +69,6 @@ customElements.define('countdown-timer',
     }
 
     /**
-     * Called after the element has been removed from the DOM.
-     */
-    stopCountdown () {
-      clearInterval(this.intervalId)
-    }
-
-    /**
      * Resets the countdown timer with a new limit and starts the countdown.
      *
      * @param {number|string} limit - The new limit for the countdown timer. It can be a number or a string that represents an integer.
@@ -124,6 +117,13 @@ customElements.define('countdown-timer',
           currentLimit--
         }
       }, 1000)
+    }
+
+    /**
+     * A method which stops the countdown timer.
+     */
+    stopCountdown () {
+      clearInterval(this.intervalId)
     }
   }
 )

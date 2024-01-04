@@ -64,7 +64,6 @@ template.innerHTML = `
 <div id="container">
   <h3 id="question"></h3>
   <div id="answerOptions"></div>
-  <button id="submitBtn">Submit answer</button>
 </div>
 `
 customElements.define('quiz-question',
@@ -83,10 +82,6 @@ customElements.define('quiz-question',
     #answerOptions
 
     /**
-     * The submit button.
-     */
-    #submitBtn
-    /**
      * Creates an instance of the current type.
      */
     constructor () {
@@ -96,9 +91,6 @@ customElements.define('quiz-question',
 
       this.#question = this.shadowRoot.getElementById('question')
       this.#answerOptions = this.shadowRoot.getElementById('answerOptions')
-      this.#submitBtn = this.shadowRoot.getElementById('submitBtn')
-
-      this.#submitBtn.addEventListener('click', this.#handleSubmit.bind(this))
     }
 
     /**

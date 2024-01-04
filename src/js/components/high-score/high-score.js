@@ -10,12 +10,16 @@ template.innerHTML = `
 <style>
     /* Add your styles here if needed */
     table {
-      width: 600px;
+      max-width: 600px;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin: 25px 0;
+      font-size: 0.9em;
+      font-family: sans-serif;
+      min-width: 400px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
     }
     th, td {
-      border: 1px solid #ddd;
       padding: 8px;
       text-align: left;
     }
@@ -28,7 +32,9 @@ template.innerHTML = `
         <th>Time(s)</th>
       </tr>
     </thead>
-    <tbody id="highscore-body"></tbody>
+    <tbody id="highscore-body">
+      <tr></tr>
+    </tbody>
   </table>
 `
 
@@ -64,10 +70,10 @@ customElements.define('high-score',
 
       highScores.sort((a, b) => a.score - b.score)
 
-      const displayedHighscores = highScores.slice(0, 5)
+      const displayedHighscores = [...highScores, ...Array(5 - highScores.length).fill({})]
 
       displayedHighscores.forEach((score, index) => {
-        this.addRow(index + 1, score.username, score.score)
+        this.addRow(index + 1, score.username || '', score.score || '')
       })
     }
 

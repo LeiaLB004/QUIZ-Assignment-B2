@@ -7,7 +7,15 @@
 
 const template = document.createElement('template')
 template.innerHTML = `
-<div id='timer'></div>
+
+<style>
+  p {
+    font-size: 20px;
+    font-family: font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #4B6387;
+  }
+</style>
+<p>Seconds left: <span id='timer'></span></p>
 `
 customElements.define('countdown-timer',
   /**
@@ -49,7 +57,7 @@ customElements.define('countdown-timer',
      */
     attributeChangedCallback (name, oldValue, newValue) {
       if (name === 'limit') {
-        this.resetTimer(newValue || 20)
+        this.resetTimer(newValue)
       }
     }
 
@@ -57,31 +65,63 @@ customElements.define('countdown-timer',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      this.resetTimer(this.getAttribute('limit') || 20)
+      this.resetTimer(this.getAttribute('limit'))
     }
 
     /**
      * Called after the element has been removed from the DOM.
      */
-    disconnectedCallback () {
+    stopCountdown () {
       clearInterval(this.intervalId)
     }
 
     /**
      * Resets the countdown timer with a new limit and starts the countdown.
      *
-     * @param {string} limit - The new limit for the countdown timer.
+     * @param {number|string} limit - The new limit for the countdown timer. It can be a number or a string that represents an integer.
      */
     resetTimer (limit) {
+      limit = parseInt(limit, 10)
+
+      // Set the initial content of the timer element.
       this.#timer.textContent = limit
+
+      // Clear any existing interval.
       clearInterval(this.intervalId)
+
+      // Start timer.
+      setTimeout(() => this.#startTimer(limit), 0)
+    }
+
+    /**
+     * Starts the countdown timer and updates the display at regular intervals.
+     *
+     * @param {number} limit - The limit for the countdown timer.
+     */
+    #startTimer (limit) {
+      // Initialize the current limit.
+      let currentLimit = limit
+
+      // Get the start time of the countdown timer.
+      const startTime = performance.now()
+
       this.intervalId = setInterval(() => {
-        this.#timer.textContent = limit
-        if (limit === 0) {
+        // Calculate the elapsed seconds.
+        const elapsedSeconds = Math.floor((performance.now() - startTime) / 1000)
+
+        // Update the current limit based on elapsed time.
+        currentLimit = limit - elapsedSeconds
+
+        console.log(currentLimit)
+        // Update the display of the countdown timer.
+        this.#timer.textContent = currentLimit
+
+        // Check if the timer has reached or passed 0.
+        if (currentLimit <= 0) {
           clearInterval(this.intervalId)
           this.dispatchEvent(new Event('timeOut'))
         } else {
-          limit--
+          currentLimit--
         }
       }, 1000)
     }

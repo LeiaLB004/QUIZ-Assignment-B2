@@ -181,6 +181,7 @@ customElements.define('quiz-application',
       })
 
       this.#countdownTimer.addEventListener('timeOut', () => {
+        this.#completeQuiz = false
         this.endQuiz()
         this.#nicknameForm.style.display = 'none'
       })

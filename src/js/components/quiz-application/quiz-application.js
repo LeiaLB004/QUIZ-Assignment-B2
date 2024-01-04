@@ -27,13 +27,18 @@ h2 {
   font-size: 30px;
 }
 
+h3 {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: #4B6387;
+  font-size: 24px;
+}
+
 #quizContainer {
   background-color: #EAE7E2;
   max-width: 600px;
-  padding: 20px;
-  padding-left: 50px;
-  margin-left: 40px;
-  margin-top: 40px;
+  padding: 100px;
+  margin-left: 80px;
+  margin-top: 80px;
 }
 
 button {
@@ -77,10 +82,11 @@ high-score {
 
 <div id="quizContainer">
   <h1>The Quiz</h1>
+  <h2>Welcome to the quiz! Choose a nickname and press enter to begin!</h2>
   <!-- Nickname form -->
   <nickname-form></nickname-form>
 
-  <h2></h2>
+  <h3></h3>
 
   <countdown-timer></countdown-timer>
   <!-- Quiz question -->
@@ -129,6 +135,11 @@ customElements.define('quiz-application',
     #headerElement
 
     /**
+     * The welcome message.
+     */
+    #welcomeMessage
+
+    /**
      * A restart button.
      */
     #restartButton
@@ -154,7 +165,8 @@ customElements.define('quiz-application',
       this.#quizQuestion = this.shadowRoot.querySelector('quiz-question')
       this.#countdownTimer = this.shadowRoot.querySelector('countdown-timer')
       this.#highScore = this.shadowRoot.querySelector('high-score')
-      this.#headerElement = this.shadowRoot.querySelector('h2')
+      this.#headerElement = this.shadowRoot.querySelector('h3')
+      this.#welcomeMessage = this.shadowRoot.querySelector('h2')
       this.#restartButton = this.shadowRoot.querySelector('#restartButton')
 
       this.submitAnswer = this.submitAnswer.bind(this)
@@ -182,12 +194,15 @@ customElements.define('quiz-application',
         const response = await fetch('https://courselab.lnu.se/quiz/question/1')
         // Fetch the first question
         this.#questionData = await response.json()
-        this.#countdownTimer.style.display = 'block'
+
+        this.#welcomeMessage.style.display = 'none'
         this.#nicknameForm.style.display = 'none'
         this.#quizQuestion.style.display = 'block'
 
-        // Show the countdown timer
         this.#quizQuestion.setQuestionData(this.#questionData, this.submitAnswer)
+
+        // Add the timer.
+        this.#countdownTimer.style.display = 'block'
         this.timer()
       } catch (error) {
         console.error('Error fetching question:', error.message)
@@ -213,7 +228,6 @@ customElements.define('quiz-application',
 
         // Do this if the player answer wrong.
         if (!response.ok) {
-          console.log('Jaha, det gick ju inte värst bra..')
           this.#completeQuiz = false
           this.endQuiz()
 
@@ -273,9 +287,7 @@ customElements.define('quiz-application',
         score: totalTime
       }
       const storedHighScores = window.localStorage.getItem('quiz-highscore')
-      console.log('Stored High Scores:', storedHighScores)
       const highscores = storedHighScores ? JSON.parse(storedHighScores) : []
-      console.log('Parsed High Scores:', highscores)
 
       highscores.push(newHighScore)
 
@@ -326,6 +338,7 @@ customElements.define('quiz-application',
     restartQuiz () {
       this.#restartButton.addEventListener('click', () => {
         this.#nicknameForm.clearInput()
+        this.#welcomeMessage.style.display = 'block'
         this.#headerElement.innerText = ''
         this.#nicknameForm.style.display = 'block'
         this.#highScore.style.display = 'none'

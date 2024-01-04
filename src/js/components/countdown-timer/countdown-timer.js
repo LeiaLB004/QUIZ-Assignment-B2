@@ -114,7 +114,7 @@ customElements.define('countdown-timer',
           /**
            * The 'timeOut' event is triggered when a countdown timer reaches zero.
            *
-           * @event high-score#timeOut
+           * @event countdown-timer#timeOut
            * @type {Event}
            */
           this.dispatchEvent(new Event('timeOut'))

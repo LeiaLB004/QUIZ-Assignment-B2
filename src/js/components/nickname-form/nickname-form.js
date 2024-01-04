@@ -76,7 +76,7 @@ customElements.define('nickname-form',
      * Called after the element is inserted into the DOM.
      */
     connectedCallback () {
-      // Add event listener to the form instead of the button
+      // Add event listener to the form.
       this.#form.addEventListener('keydown',
         /**
          * Handles the submit event.
@@ -87,6 +87,12 @@ customElements.define('nickname-form',
           if (event.key === 'Enter') {
             event.preventDefault()
             const nickname = this.chosenNickname()
+            /**
+             * The 'startQuiz' custom event is triggered when a user initiates the quiz by providing a nickname.
+             *
+             * @event nickname-form#startQuiz
+             * @type {CustomEvent}
+             */
             this.dispatchEvent(new CustomEvent('startQuiz', { detail: { nickname } }))
           }
         })

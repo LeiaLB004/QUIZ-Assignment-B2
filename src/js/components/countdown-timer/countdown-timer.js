@@ -111,6 +111,12 @@ customElements.define('countdown-timer',
         // Check if the timer has reached or passed 0.
         if (currentLimit <= 0) {
           clearInterval(this.intervalId)
+          /**
+           * The 'timeOut' event is triggered when a countdown timer reaches zero.
+           *
+           * @event high-score#timeOut
+           * @type {Event}
+           */
           this.dispatchEvent(new Event('timeOut'))
         } else {
           currentLimit--

@@ -8,19 +8,32 @@
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
+  h3 {
+    font-size: 28px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #4B6387;
+  }
   input {
-    display: box;
     padding: 10px;
+    padding-right: 100px;
     margin: 10px 0;
     border-radius: 10px;
-    font-family:inherit;
-    font-size: inherit;
-    border: 2px solid grey;
+    font-size: 16px;
+    border: 2px solid #8594A6;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 
   input:hover {
     background-color: #fafafa;
-    border: 2px solid lightgrey;
+    border: 2px solid #3E4658;
+  }
+
+  label {
+
+    padding-left: 10px;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: #4B6387;
   }
 
   button {
@@ -29,15 +42,14 @@ template.innerHTML = `
     -webkit-appearance:none;
     padding:10px;
     border:none;
-    background-color:#3F51B5;
+    background-color: #4B6387;
     color:#fff;
     font-weight:600;
     border-radius:5px;
-
   }
 
   button:hover {
-    background-color: #5163c9;
+    background-color: #A0B3C1;
   }
 
   #answerOptions {

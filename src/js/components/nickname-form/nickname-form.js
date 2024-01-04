@@ -10,13 +10,13 @@ template.innerHTML = `
 <style>
 
   h2 {
-    font-size: 30px;
+    font-size: 24px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    color: #4B6387;
+    color: #364A60;
   }
 
   input {
-    display: box;
+    display: block;
     padding: 15px;
     padding-right: 100px;
     margin: 10px 0;

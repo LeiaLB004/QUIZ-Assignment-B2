@@ -15,13 +15,34 @@ template.innerHTML = `
 
 <style> 
 
+h1 {
+  font-size: 60px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: #2C2F44;
+}
+
+h2 {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: #4B6387;
+  font-size: 30px;
+}
+
+#quizContainer {
+  background-color: #EAE7E2;
+  max-width: 600px;
+  padding: 20px;
+  padding-left: 50px;
+  margin-left: 40px;
+  margin-top: 40px;
+}
+
 button {
     display: block;
     appearance:none;
     -webkit-appearance:none;
     padding:10px;
     border:none;
-    background-color:#3F51B5;
+    background-color: #4B6387;
     color:#fff;
     font-weight:600;
     border-radius:5px;
@@ -29,11 +50,12 @@ button {
   }
 
   button:hover {
-    background-color: #5163c9;
+    background-color: #A0B3C1;
   }
 
 nickname-form {
   display: block;
+  
 }
 quiz-question {
   display: none;
@@ -212,7 +234,6 @@ customElements.define('quiz-application',
             this.timer()
             // Do this if the player finished the quiz.
           } else {
-            this.stopTimer = new Date().getTime()
             this.#completeQuiz = true
             this.endQuiz()
           }
@@ -252,8 +273,9 @@ customElements.define('quiz-application',
         score: totalTime
       }
       const storedHighScores = window.localStorage.getItem('quiz-highscore')
-
+      console.log('Stored High Scores:', storedHighScores)
       const highscores = storedHighScores ? JSON.parse(storedHighScores) : []
+      console.log('Parsed High Scores:', highscores)
 
       highscores.push(newHighScore)
 
@@ -264,6 +286,18 @@ customElements.define('quiz-application',
       window.localStorage.setItem('quiz-highscore', JSON.stringify(highscores))
 
       this.#highScore.setHighScores(topHighScores)
+      this.#highScore.style.display = 'block'
+    }
+
+    /**
+     * A method for showing the high score board.
+     */
+    showHighScoreBoard () {
+      const storedHighScores = window.localStorage.getItem('quiz-highscore')
+      const highscores = storedHighScores ? JSON.parse(storedHighScores) : []
+      const topHighScores = highscores.slice(0, 5)
+      this.#highScore.setHighScores(topHighScores)
+      this.#highScore.style.display = 'block'
     }
 
     /**
@@ -271,15 +305,15 @@ customElements.define('quiz-application',
      */
     endQuiz () {
       if (this.#completeQuiz) {
-        console.log('Yes, You did it!')
+        this.stopTimer = new Date().getTime()
         this.#headerElement.innerText = 'You did it!'
         this.storeHighScore(this.userTime())
       } else {
+        this.showHighScoreBoard()
         this.#headerElement.innerText = 'Well, that did not go well... Better luck next time!'
       }
-      this.#countdownTimer.disconnectedCallback()
+      this.#countdownTimer.stopCountdown()
       this.#quizQuestion.style.display = 'none'
-      this.#highScore.style.display = 'block'
       this.#countdownTimer.style.display = 'none'
       this.#restartButton.style.display = 'block'
 
@@ -292,6 +326,7 @@ customElements.define('quiz-application',
     restartQuiz () {
       this.#restartButton.addEventListener('click', () => {
         this.#nicknameForm.clearInput()
+        this.#headerElement.innerText = ''
         this.#nicknameForm.style.display = 'block'
         this.#highScore.style.display = 'none'
         this.#restartButton.style.display = 'none'

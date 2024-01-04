@@ -9,23 +9,31 @@ const template = document.createElement('template')
 template.innerHTML = `
 <style>
 
+  h2 {
+    font-size: 30px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #4B6387;
+  }
+
   input {
     display: box;
-    padding: 10px;
+    padding: 15px;
+    padding-right: 100px;
     margin: 10px 0;
     border-radius: 10px;
     font-family:inherit;
-    font-size: inherit;
-    border: 2px solid grey;
+    font-size: 16px;
+    border: 2px solid #8594A6;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 
   input:hover {
     background-color: #fafafa;
-    border: 2px solid lightgrey;
+    border: 2px solid #3E4658;
   }
 
 </style>
-<h2>Type in your nickname</h2>
+<h2>Choose your nickname</h2>
 <form id=nicknameForm>
     <input type="text" id="nickname" placeholder="Type here and press enter" required>
 </form>

@@ -105,7 +105,6 @@ customElements.define('countdown-timer',
         // Update the current limit based on elapsed time.
         currentLimit = limit - elapsedSeconds
 
-        console.log(currentLimit)
         // Update the display of the countdown timer.
         this.#timer.textContent = currentLimit
 
